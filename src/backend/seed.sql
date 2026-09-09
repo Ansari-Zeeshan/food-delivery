@@ -1,0 +1,333 @@
+-- InsForge PostgreSQL Seed Data for Food Delivery Application
+
+TRUNCATE TABLE public.order_status_history, public.order_items, public.orders, public.cart_item_options, public.cart_items, public.carts, public.favorite_foods, public.favorite_restaurants, public.food_options, public.food_option_groups, public.food_items, public.menu_categories, public.restaurants, public.promotions, public.couriers CASCADE;
+
+-- 1. RESTAURANTS
+INSERT INTO public.restaurants (id, name, slug, tagline, description, cuisine, rating, rating_count, hero_image, logo, address, opening_hours, delivery_time, delivery_fee, min_order, price_level, distance, tags, is_featured, is_popular, is_open)
+VALUES
+(
+  '11111111-1111-1111-1111-111111111111',
+  'Casa Verde Trattoria',
+  'casa-verde-trattoria',
+  'Artisanal Fresh Pasta & Wood-Fired Specialties',
+  'Authentic Northern Italian cuisine crafted with organic seasonal ingredients, hand-rolled pasta made daily, and imported Parmigiano-Reggiano.',
+  ARRAY['Italian', 'Pasta', 'Wine Bar'],
+  4.9,
+  384,
+  'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1200&q=80',
+  'https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=200&q=80',
+  '442 Tuscany Way, Culinary District',
+  '11:00 AM – 10:30 PM',
+  '25–35 min',
+  0.00,
+  25.00,
+  '$$$',
+  '1.4 miles',
+  ARRAY['Michelin Guide Recommended', 'Free Delivery', 'Handmade Pasta'],
+  true,
+  true,
+  true
+),
+(
+  '22222222-2222-2222-2222-222222222222',
+  'LUMEN Bistro & Grill',
+  'lumen-bistro-grill',
+  'Contemporary European Fine Casual Dining',
+  'Elevated bistro classics featuring dry-aged steaks, truffle infused risottos, and organic garden bowls prepared by Chef Marcus Vance.',
+  ARRAY['French', 'Contemporary', 'Steakhouse'],
+  4.8,
+  292,
+  'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80',
+  'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=200&q=80',
+  '108 Grand Avenue, Suite 4',
+  '12:00 PM – 11:00 PM',
+  '30–40 min',
+  2.99,
+  30.00,
+  '$$$$',
+  '2.1 miles',
+  ARRAY['Chef Special', 'Organic', 'Truffle'],
+  true,
+  true,
+  true
+),
+(
+  '33333333-3333-3333-3333-333333333333',
+  'Nori & Smoke Izakaya',
+  'nori-smoke-izakaya',
+  'Modern Japanese Robata & Precision Sushi',
+  'Wild-caught sashimi grade seafood, robata charcoal-grilled skewers, and artisanal ramen bowls simmered for 18 hours.',
+  ARRAY['Japanese', 'Asian', 'Sushi'],
+  4.9,
+  512,
+  'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=1200&q=80',
+  'https://images.unsplash.com/photo-1611143669185-af224c5e3252?auto=format&fit=crop&w=200&q=80',
+  '89 Sakata Street, Little Tokyo',
+  '11:30 AM – 11:30 PM',
+  '20–30 min',
+  0.00,
+  20.00,
+  '$$$',
+  '0.8 miles',
+  ARRAY['Top Rated', 'Fresh Sashimi', 'Fast Courier'],
+  true,
+  true,
+  true
+),
+(
+  '44444444-4444-4444-4444-444444444444',
+  'Fornai Woodfired Pizza',
+  'fornai-woodfired-pizza',
+  'Neapolitan Sourdough Pizza',
+  '72-hour cold fermented sourdough baked at 900°F in imported volcanic stone ovens using San Marzano tomatoes.',
+  ARRAY['Pizza', 'Italian'],
+  4.7,
+  418,
+  'https://images.unsplash.com/photo-1590846406792-0adc7f938f1d?auto=format&fit=crop&w=1200&q=80',
+  'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=200&q=80',
+  '312 Naples Boulevard',
+  '11:00 AM – 10:00 PM',
+  '20–30 min',
+  1.99,
+  18.00,
+  '$$',
+  '1.2 miles',
+  ARRAY['Sourdough', 'Woodfired'],
+  false,
+  true,
+  true
+),
+(
+  '55555555-5555-5555-5555-555555555555',
+  'Verdant Plant & Grain',
+  'verdant-plant-grain',
+  'Organic Nourishment & Superfood Bowls',
+  'Vibrant, nutrient-dense macro bowls, cold-pressed elixirs, and chef-crafted plant-based meals that never compromise on flavor.',
+  ARRAY['Healthy', 'Vegan', 'Salads'],
+  4.8,
+  204,
+  'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=1200&q=80',
+  'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=200&q=80',
+  '15 Green Life Plaza',
+  '08:00 AM – 09:00 PM',
+  '15–25 min',
+  0.00,
+  15.00,
+  '$$',
+  '0.6 miles',
+  ARRAY['100% Vegan', 'Gluten Free Options', 'Eco Packaging'],
+  false,
+  true,
+  true
+),
+(
+  '66666666-6666-6666-6666-666666666666',
+  'Moti Spice Craft',
+  'moti-spice-craft',
+  'Slow-Cooked Heritage Indian Fare',
+  'Aromatic tandoori kebabs, velvet butter chicken, and copper pot biryanis crafted with freshly ground whole spices.',
+  ARRAY['Indian', 'Curry'],
+  4.9,
+  360,
+  'https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=1200&q=80',
+  'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=200&q=80',
+  '77 Royal Spice Way',
+  '12:00 PM – 10:30 PM',
+  '30–40 min',
+  2.49,
+  22.00,
+  '$$$',
+  '2.8 miles',
+  ARRAY['Heritage Recipes', 'Tandoor Oven'],
+  false,
+  false,
+  true
+);
+
+-- 2. MENU CATEGORIES
+INSERT INTO public.menu_categories (id, restaurant_id, name, slug, display_order)
+VALUES
+('a1111111-1111-1111-1111-111111111111', '11111111-1111-1111-1111-111111111111', 'Pasta', 'pasta', 1),
+('a2222222-2222-2222-2222-222222222222', '44444444-4444-4444-4444-444444444444', 'Pizza', 'pizza', 1),
+('a3333333-3333-3333-3333-333333333333', '22222222-2222-2222-2222-222222222222', 'Burger', 'burger', 1),
+('a4444444-4444-4444-4444-444444444444', '33333333-3333-3333-3333-333333333333', 'Asian', 'asian', 1),
+('a5555555-5555-5555-5555-555555555555', '55555555-5555-5555-5555-555555555555', 'Healthy', 'healthy', 1),
+('a6666666-6666-6666-6666-666666666666', '66666666-6666-6666-6666-666666666666', 'Indian', 'indian', 1),
+('a7777777-7777-7777-7777-777777777777', '11111111-1111-1111-1111-111111111111', 'Desserts', 'desserts', 2),
+('a8888888-8888-8888-8888-888888888888', '33333333-3333-3333-3333-333333333333', 'Drinks', 'drinks', 2);
+
+-- 3. FOOD ITEMS
+INSERT INTO public.food_items (id, restaurant_id, category_id, category_name, name, description, base_price, image, rating, rating_count, prep_time, calories, is_popular, is_dietary, is_available)
+VALUES
+(
+  'b1111111-1111-1111-1111-111111111111',
+  '11111111-1111-1111-1111-111111111111',
+  'a1111111-1111-1111-1111-111111111111',
+  'Pasta',
+  'Wild Truffle & Porcini Pappardelle',
+  'Hand-rolled wide ribbon pasta served with fresh black winter truffle shaved tableside, porcini mushrooms, aged Parmigiano-Reggiano, and cultured butter sauce.',
+  24.50,
+  'https://images.unsplash.com/photo-1621996346565-e3d5d6281358?auto=format&fit=crop&w=800&q=80',
+  4.9,
+  142,
+  '18–22 min',
+  680,
+  true,
+  ARRAY['Vegetarian'],
+  true
+),
+(
+  'b2222222-2222-2222-2222-222222222222',
+  '22222222-2222-2222-2222-222222222222',
+  'a3333333-3333-3333-3333-333333333333',
+  'Burger',
+  'Wagyu Truffle Smash Burger',
+  'Double A5 Wagyu beef patties smashed crisp, black truffle aioli, caramelised shallots, aged Gruyère cheese, on toasted artisanal brioche.',
+  21.00,
+  'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80',
+  4.8,
+  198,
+  '15–20 min',
+  850,
+  true,
+  ARRAY[]::TEXT[],
+  true
+),
+(
+  'b3333333-3333-3333-3333-333333333333',
+  '33333333-3333-3333-3333-333333333333',
+  'a4444444-4444-4444-4444-444444444444',
+  'Asian',
+  'Bluefin Otoro & Caviar Nigiri Set',
+  '6-piece fatty bluefin tuna belly topped with Royal Osetra caviar, fresh wasabi root, and barrel-aged artisanal soy glaze.',
+  32.00,
+  'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=800&q=80',
+  5.0,
+  86,
+  '12–15 min',
+  420,
+  true,
+  ARRAY['Gluten-Free', 'Halal'],
+  true
+),
+(
+  'b4444444-4444-4444-4444-444444444444',
+  '44444444-4444-4444-4444-444444444444',
+  'a2222222-2222-2222-2222-222222222222',
+  'Pizza',
+  'Tartufo e Burrata Neapolitan Pizza',
+  'San Marzano tomato base, creamy fresh Puglia burrata, wild mushrooms, fresh basil leaves, and black truffle oil drizzle.',
+  22.50,
+  'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80',
+  4.7,
+  164,
+  '15–20 min',
+  790,
+  true,
+  ARRAY['Vegetarian'],
+  true
+),
+(
+  'b5555555-5555-5555-5555-555555555555',
+  '66666666-6666-6666-6666-666666666666',
+  'a6666666-6666-6666-6666-666666666666',
+  'Indian',
+  'Royal Velvet Butter Chicken & Garlic Naan',
+  'Free-range chicken thighs marinated overnight in spiced yogurt, charred in clay tandoor, simmered in rich cashew tomato gravy.',
+  19.50,
+  'https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=800&q=80',
+  4.9,
+  210,
+  '20–25 min',
+  740,
+  true,
+  ARRAY['Halal'],
+  true
+),
+(
+  'b6666666-6666-6666-6666-666666666666',
+  '55555555-5555-5555-5555-555555555555',
+  'a5555555-5555-5555-5555-555555555555',
+  'Healthy',
+  'Green Goddess Superfood Macro Bowl',
+  'Organic tri-color quinoa, hass avocado, steamed edamame, roasted sweet potato, hemp seeds, green tahini goddess dressing.',
+  16.50,
+  'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80',
+  4.8,
+  92,
+  '10–15 min',
+  480,
+  false,
+  ARRAY['Vegan', 'Vegetarian', 'Gluten-Free'],
+  true
+),
+(
+  'b7777777-7777-7777-7777-777777777777',
+  '11111111-1111-1111-1111-111111111111',
+  'a7777777-7777-7777-7777-777777777777',
+  'Desserts',
+  'Dark Chocolate Molten Lava Cake',
+  'Warm 70% Valrhona dark chocolate cake with molten ganache center, served with Madagascar bourbon vanilla bean gelato.',
+  12.00,
+  'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=800&q=80',
+  4.9,
+  115,
+  '10–12 min',
+  520,
+  true,
+  ARRAY['Vegetarian'],
+  true
+),
+(
+  'b8888888-8888-8888-8888-888888888888',
+  '33333333-3333-3333-3333-333333333333',
+  'a8888888-8888-8888-8888-888888888888',
+  'Drinks',
+  'Artisanal Yuzu Sparkling Elixir',
+  'Cold-pressed Japanese yuzu citrus juice infused with sparkling spring water, shiso leaf syrup, and edible gold flakes.',
+  7.50,
+  'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=800&q=80',
+  4.7,
+  74,
+  '5 min',
+  90,
+  false,
+  ARRAY['Vegan', 'Gluten-Free'],
+  true
+);
+
+-- 4. FOOD OPTION GROUPS & OPTIONS
+INSERT INTO public.food_option_groups (id, food_item_id, name, type, is_required)
+VALUES
+('c1111111-1111-1111-1111-111111111111', 'b1111111-1111-1111-1111-111111111111', 'Size', 'single', true),
+('c2222222-2222-2222-2222-222222222222', 'b1111111-1111-1111-1111-111111111111', 'Extras', 'multiple', false),
+('c3333333-3333-3333-3333-333333333333', 'b2222222-2222-2222-2222-222222222222', 'Size', 'single', true),
+('c4444444-4444-4444-4444-444444444444', 'b2222222-2222-2222-2222-222222222222', 'Extras', 'multiple', false);
+
+INSERT INTO public.food_options (id, option_group_id, name, price_modifier)
+VALUES
+('d1111111-1111-1111-1111-111111111111', 'c1111111-1111-1111-1111-111111111111', 'Regular Portion', 0.00),
+('d1111111-1111-1111-1111-111111111112', 'c1111111-1111-1111-1111-111111111111', 'Large Portion', 4.50),
+('d1111111-1111-1111-1111-111111111113', 'c1111111-1111-1111-1111-111111111111', 'Family Feast Portion', 9.00),
+('d2222222-2222-2222-2222-222222222221', 'c2222222-2222-2222-2222-222222222222', 'Extra Shaved Black Truffle', 5.00),
+('d2222222-2222-2222-2222-222222222222', 'c2222222-2222-2222-2222-222222222222', 'Garlic Herb Focaccia', 3.50),
+('d2222222-2222-2222-2222-222222222223', 'c2222222-2222-2222-2222-222222222222', 'Aged Parmigiano Reggiano', 2.00),
+('d3333333-3333-3333-3333-333333333331', 'c3333333-3333-3333-3333-333333333333', 'Single Patty', -3.00),
+('d3333333-3333-3333-3333-333333333332', 'c3333333-3333-3333-3333-333333333333', 'Double Wagyu Patty (Standard)', 0.00),
+('d3333333-3333-3333-3333-333333333333', 'c3333333-3333-3333-3333-333333333333', 'Triple Wagyu Beast', 5.50),
+('d4444444-4444-4444-4444-444444444441', 'c4444444-4444-4444-4444-444444444444', 'Crispy Smoked Bacon', 2.50),
+('d4444444-4444-4444-4444-444444444442', 'c4444444-4444-4444-4444-444444444444', 'Extra Truffle Mayo Dip', 1.50);
+
+-- 5. PROMOTIONS
+INSERT INTO public.promotions (id, code, description, discount_type, discount_value, min_order_amount, is_active)
+VALUES
+('f1111111-1111-1111-1111-111111111111', 'WELCOME20', '20% off your entire first order', 'percentage', 20.00, 20.00, true),
+('f2222222-2222-2222-2222-222222222222', 'FREEDEL10', 'Free delivery on orders over $15', 'free_delivery', 0.00, 15.00, true),
+('f3333333-3333-3333-3333-333333333333', 'FOODY5', '$5 off orders over $25', 'fixed', 5.00, 25.00, true);
+
+-- 6. COURIERS
+INSERT INTO public.couriers (id, name, phone, rating, vehicle, avatar, deliveries_count)
+VALUES
+('e1111111-1111-1111-1111-111111111111', 'Marco Rossi', '+1 (555) 234-5678', 4.9, 'E-Bike', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80', 214),
+('e2222222-2222-2222-2222-222222222222', 'Sarah Chen', '+1 (555) 876-5432', 4.95, 'Vespa Scooter', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80', 380),
+('e3333333-3333-3333-3333-333333333333', 'Alex Thorne', '+1 (555) 432-1098', 4.88, 'EV Runner', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80', 145);

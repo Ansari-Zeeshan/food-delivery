@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-bg: #F3F1F0;
+  --color-brand-dark: #111111;
+  --color-brand-red: #C93632;
+  --color-brand-tomato: #E24B42;
+  --color-brand-surface: #E8E5E3;
+  --color-brand-surface-light: #FAF9F8;
+  --color-brand-muted: #73706D;
+  --color-brand-border: #D8D4D1;
+  --color-brand-green: #2E7D32;
+  --color-brand-green-light: #E8F5E9;
+  --color-brand-amber: #D97706;
+  --color-brand-amber-light: #FEF3C7;
+
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    background-color: #F3F1F0;
+    color: #111111;
+    overflow-x: hidden;
+  }
+
+  button,
+  button *,
+  a,
+  a *,
+  select,
+  input[type="submit"],
+  input[type="button"],
+  input[type="checkbox"],
+  input[type="radio"],
+  input[type="range"],
+  [role="button"],
+  [role="button"] *,
+  .cursor-pointer,
+  .cursor-pointer * {
+    cursor: pointer !important;
+  }
+
+  input[type="text"],
+  input[type="password"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="search"],
+  textarea {
+    cursor: text !important;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #F3F1F0;
+}
+::-webkit-scrollbar-thumb {
+  background: #D8D4D1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #73706D;
+}
+
+@keyframes subtle-float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(2deg);
+  }
+}
+
+@keyframes subtle-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+.animate-subtle-float {
+  animation: subtle-float 6s ease-in-out infinite;
+}
+
+.animate-subtle-pulse {
+  animation: subtle-pulse 2.5s ease-in-out infinite;
+}

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
+import { useToast } from '../components/ui/Toast';
 import { favoriteService } from '../services/favoriteService';
 
 interface FavoritesContextType {
@@ -14,18 +15,20 @@ interface FavoritesContextType {
 const FavoritesContext = createContext<FavoritesContextType | undefined>(undefined);
 
 export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user } = useAuth();
-  const [favoriteFoodIds, setFavoriteFoodIds] = useState<string[]>(['b1111111-1111-1111-1111-111111111111', 'b4444444-4444-4444-4444-444444444444', 'b7777777-7777-7777-7777-777777777777']);
-  const [favoriteRestaurantIds, setFavoriteRestaurantIds] = useState<string[]>(['11111111-1111-1111-1111-111111111111', '33333333-3333-3333-3333-333333333333']);
+  const { user, setIsAuthModalOpen } = useAuth();
+  const { showToast } = useToast();
+  const [favoriteFoodIds, setFavoriteFoodIds] = useState<string[]>([]);
+  const [favoriteRestaurantIds, setFavoriteRestaurantIds] = useState<string[]>([]);
 
   useEffect(() => {
     async function loadUserFavorites() {
       if (user && user.id !== 'guest') {
         const favs = await favoriteService.getFavorites(user.id);
-        if (favs.favoriteRestaurantIds.length > 0 || favs.favoriteFoodIds.length > 0) {
-          setFavoriteRestaurantIds(favs.favoriteRestaurantIds);
-          setFavoriteFoodIds(favs.favoriteFoodIds);
-        }
+        setFavoriteRestaurantIds(favs.favoriteRestaurantIds);
+        setFavoriteFoodIds(favs.favoriteFoodIds);
+      } else {
+        setFavoriteRestaurantIds([]);
+        setFavoriteFoodIds([]);
       }
     }
 
@@ -33,25 +36,33 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   }, [user]);
 
   const toggleFavoriteFood = async (foodId: string) => {
+    if (!user || user.id === 'guest') {
+      showToast('Please sign in to save your favorite dishes', 'info');
+      setIsAuthModalOpen(true);
+      return;
+    }
+
     const isFav = favoriteFoodIds.includes(foodId);
     setFavoriteFoodIds(prev =>
       isFav ? prev.filter(id => id !== foodId) : [...prev, foodId]
     );
 
-    if (user && user.id !== 'guest') {
-      await favoriteService.toggleFavoriteFood(user.id, foodId, isFav);
-    }
+    await favoriteService.toggleFavoriteFood(user.id, foodId, isFav);
   };
 
   const toggleFavoriteRestaurant = async (restaurantId: string) => {
+    if (!user || user.id === 'guest') {
+      showToast('Please sign in to save your favorite restaurants', 'info');
+      setIsAuthModalOpen(true);
+      return;
+    }
+
     const isFav = favoriteRestaurantIds.includes(restaurantId);
     setFavoriteRestaurantIds(prev =>
       isFav ? prev.filter(id => id !== restaurantId) : [...prev, restaurantId]
     );
 
-    if (user && user.id !== 'guest') {
-      await favoriteService.toggleFavoriteRestaurant(user.id, restaurantId, isFav);
-    }
+    await favoriteService.toggleFavoriteRestaurant(user.id, restaurantId, isFav);
   };
 
   const isFoodFavorite = (foodId: string) => favoriteFoodIds.includes(foodId);

@@ -13,6 +13,7 @@ interface AuthContextType {
   loginWithOTP: (phone: string) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
+  restoreSession: () => Promise<UserProfile | null>;
   addresses: DeliveryAddress[];
   selectedAddress: DeliveryAddress;
   setSelectedAddressId: (id: string) => void;
@@ -53,63 +54,69 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('foody_city', selectedCity);
   }, [selectedCity]);
 
-  // Restore current authenticated user from InsForge Auth on mount
-  useEffect(() => {
-    async function restoreSession() {
-      try {
-        setLoading(true);
-        // Automatically detect and exchange OAuth callback code if returning from Google OAuth
+  // Restore current authenticated user from InsForge Auth
+  const restoreSession = async (): Promise<UserProfile | null> => {
+    try {
+      setLoading(true);
+      // Automatically detect and exchange OAuth callback code if returning from Google OAuth
+      if (typeof (insforge.auth as any).detectAuthCallback === 'function') {
         await (insforge.auth as any).detectAuthCallback().catch(() => {});
-
-        const currentUser = await authService.getCurrentUser();
-        if (currentUser) {
-          // Ensure profile row exists in Postgres linked to auth.users.id
-          await profileService.ensureProfile({
-            id: currentUser.id,
-            email: currentUser.email,
-            name: currentUser.name,
-            avatar: currentUser.avatar,
-            phone: currentUser.phone,
-          });
-
-          const userAddresses = await profileService.getAddresses(currentUser.id);
-          const addrs = userAddresses.length > 0 ? userAddresses : DEFAULT_ADDRESSES;
-
-          const activeUser: UserProfile = {
-            id: currentUser.id,
-            name: currentUser.name,
-            email: currentUser.email,
-            phone: currentUser.phone || '+91 98765 43210',
-            avatar: currentUser.avatar || defaultUser.avatar,
-            addresses: addrs,
-            favoriteFoodIds: [],
-            favoriteRestaurantIds: [],
-          };
-          setUser(activeUser);
-          localStorage.setItem('foody_auth_user', JSON.stringify(activeUser));
-          setAddresses(addrs);
-          setSelectedAddressIdState(addrs[0]?.id || DEFAULT_ADDRESSES[0].id);
-        } else {
-          const savedSession = localStorage.getItem('foody_auth_user');
-          if (savedSession) {
-            try {
-              const parsed = JSON.parse(savedSession);
-              if (parsed && parsed.id) {
-                setUser(parsed);
-                if (parsed.addresses && parsed.addresses.length > 0) {
-                  setAddresses(parsed.addresses);
-                }
-              }
-            } catch {}
-          }
-        }
-      } catch (err) {
-        console.warn('Session restoration notice:', err);
-      } finally {
-        setLoading(false);
       }
-    }
 
+      const currentUser = await authService.getCurrentUser();
+      if (currentUser) {
+        // Ensure profile row exists in Postgres linked to auth.users.id
+        await profileService.ensureProfile({
+          id: currentUser.id,
+          email: currentUser.email,
+          name: currentUser.name,
+          avatar: currentUser.avatar,
+          phone: currentUser.phone,
+        });
+
+        const userAddresses = await profileService.getAddresses(currentUser.id);
+        const addrs = userAddresses.length > 0 ? userAddresses : DEFAULT_ADDRESSES;
+
+        const activeUser: UserProfile = {
+          id: currentUser.id,
+          name: currentUser.name,
+          email: currentUser.email,
+          phone: currentUser.phone || '+91 98765 43210',
+          avatar: currentUser.avatar || defaultUser.avatar,
+          addresses: addrs,
+          favoriteFoodIds: [],
+          favoriteRestaurantIds: [],
+        };
+        setUser(activeUser);
+        localStorage.setItem('foody_auth_user', JSON.stringify(activeUser));
+        setAddresses(addrs);
+        setSelectedAddressIdState(addrs[0]?.id || DEFAULT_ADDRESSES[0].id);
+        return activeUser;
+      } else {
+        const savedSession = localStorage.getItem('foody_auth_user');
+        if (savedSession) {
+          try {
+            const parsed = JSON.parse(savedSession);
+            if (parsed && parsed.id && parsed.id !== 'guest') {
+              setUser(parsed);
+              if (parsed.addresses && parsed.addresses.length > 0) {
+                setAddresses(parsed.addresses);
+              }
+              return parsed;
+            }
+          } catch {}
+        }
+        return null;
+      }
+    } catch (err) {
+      console.warn('Session restoration notice:', err);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     restoreSession();
   }, []);
 
@@ -200,23 +207,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const loginWithGoogle = async () => {
-    try {
-      await authService.signInWithGoogle();
-    } catch (e) {
-      console.warn('Google OAuth error/fallback:', e);
-      const googleUser: UserProfile = {
-        id: `user-google-${Date.now()}`,
-        name: 'Alex Morgan',
-        email: 'alex.morgan@gmail.com',
-        phone: '+91 98765 43210',
-        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
-        addresses: DEFAULT_ADDRESSES,
-        favoriteFoodIds: [],
-        favoriteRestaurantIds: [],
-      };
-      setUser(googleUser);
-      localStorage.setItem('foody_auth_user', JSON.stringify(googleUser));
-      setIsAuthModalOpen(false);
+    const data = await authService.signInWithGoogle();
+    if (data?.url) {
+      window.location.href = data.url;
     }
   };
 
@@ -289,6 +282,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         loginWithOTP,
         loginWithGoogle,
         logout,
+        restoreSession,
         addresses,
         selectedAddress,
         setSelectedAddressId,

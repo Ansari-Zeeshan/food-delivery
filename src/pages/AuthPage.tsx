@@ -95,6 +95,7 @@ export const AuthPage: React.FC = () => {
   const handleGoogleSignIn = async () => {
     setErrorMsg(null);
     try {
+      showToast('Redirecting to Google sign-in...', 'info');
       await loginWithGoogle();
     } catch (err: any) {
       setErrorMsg(err.message || 'Google sign-in failed. Please try again.');

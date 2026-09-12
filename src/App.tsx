@@ -29,6 +29,7 @@ import { OffersPage } from './pages/OffersPage';
 import { AboutPage } from './pages/AboutPage';
 import { HelpPage } from './pages/HelpPage';
 import { AuthPage } from './pages/AuthPage';
+import { AuthCallbackPage } from './pages/AuthCallbackPage';
 
 // ScrollToTop component to reset viewport scroll position on page change
 const ScrollToTop: React.FC = () => {
@@ -74,6 +75,7 @@ const AnimatedRoutes: React.FC = () => {
           <Route path="/contact" element={<HelpPage />} />
           <Route path="/login" element={<AuthPage />} />
           <Route path="/register" element={<AuthPage />} />
+          <Route path="/auth/callback" element={<AuthCallbackPage />} />
         </Routes>
       </motion.div>
     </AnimatePresence>
@@ -83,11 +85,11 @@ const AnimatedRoutes: React.FC = () => {
 export function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <FavoritesProvider>
-          <CartProvider>
-            <OrderProvider>
-              <ToastProvider>
+      <ToastProvider>
+        <AuthProvider>
+          <FavoritesProvider>
+            <CartProvider>
+              <OrderProvider>
                 <ScrollToTop />
                 <div className="flex flex-col min-h-screen bg-brand-bg text-brand-dark font-sans selection:bg-brand-red selection:text-white">
                   <Header />
@@ -100,11 +102,11 @@ export function App() {
                   <Footer />
                   <MobileNav />
                 </div>
-              </ToastProvider>
-            </OrderProvider>
-          </CartProvider>
-        </FavoritesProvider>
-      </AuthProvider>
+              </OrderProvider>
+            </CartProvider>
+          </FavoritesProvider>
+        </AuthProvider>
+      </ToastProvider>
     </BrowserRouter>
   );
 }

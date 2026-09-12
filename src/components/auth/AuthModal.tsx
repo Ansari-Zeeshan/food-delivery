@@ -79,11 +79,10 @@ export const AuthModal: React.FC = () => {
   const handleGoogleSignIn = async () => {
     setIsSubmitting(true);
     try {
+      showToast('Redirecting to Google sign-in...', 'info');
       await loginWithGoogle();
-      showToast('Signed in with Google successfully!', 'success');
-    } catch (err) {
-      showToast('Google Sign-In failed', 'error');
-    } finally {
+    } catch (err: any) {
+      showToast(err.message || 'Google Sign-In failed', 'error');
       setIsSubmitting(false);
     }
   };
